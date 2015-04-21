@@ -4,7 +4,7 @@ from twisted.internet.protocol import DatagramProtocol
 from twisted.internet.defer import inlineCallbacks
 import txmongo
 
-import struct, msgpack, json
+import struct, msgpack
 from io import BytesIO
 
 from os import urandom
@@ -91,10 +91,10 @@ class SessionList(resource.Resource):
     
     def render_GET(self, request):
         def render(res):
-            servers = [(s['host'], s['port']) for s in res]
-            request.write(json.dumps(servers))
+            servers = ''.join(struct.pack('4sH', inet_aton(s['host']), s['port']) for s in res)
+            request.write(servers)
             request.finish()
-        d = db.servers.find(fields=['host', 'port'])
+        d = db.servers.find(fields=['host', 'port'], limit=1024)
         d.addCallback(render)
         return server.NOT_DONE_YET
 
