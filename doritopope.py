@@ -90,8 +90,10 @@ class SessionList(resource.Resource):
         setup_db()
     
     def render_GET(self, request):
+        request.setHeader('Content-Type', 'application/octet-stream')
         def render(res):
             servers = ''.join(struct.pack('4sH', inet_aton(s['host']), s['port']) for s in res)
+            request.setHeader('Content-Length', len(servers))
             request.write(servers)
             request.finish()
         d = db.servers.find(fields=['host', 'port'], limit=1024)
