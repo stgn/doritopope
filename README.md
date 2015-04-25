@@ -2,4 +2,4 @@
 
 It requires Python 2.7, MongoDB, Twisted, txmongo, and msgpack-python.
 
-No setup required. Just install the prerequisites and run doritopope.py.
+No setup required. Just install the prerequisites and run `twistd -y doritopope.py`.
